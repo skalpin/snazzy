@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<style>
+			.col {
+				width: 28%;
+				float: right;
+				margin: 10px;
+				margin-right: 30px;
+				margin-top: 30px;
+				height: 90%;
+
+				border-radius: 10px;			
+			}
+			.col1 {
+				background-color: red;			
+			}
+			.col2 {
+				background-color: green;
+			}
+			.col3 {
+				background-color: blue;
+			}
+			.overlay {
+				color: white;
+				font-family: sans;
+				font-size: 50px;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 90px;
+			}
+			body {
+				overflow: hidden;
+				background-color: black;
+			}
+		</style>
+		<script type="text/javascript" src="/static/jquery-2.1.4.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				var preview_location = '/preview.html';
+				$(".col1").click(function(){
+					window.location = preview_location + "?color=sepia"				
+				});
+				$(".col2").click(function(){
+					window.location = preview_location + "?color=bw"			
+				});
+				$(".col3").click(function(){
+					window.location = preview_location + "?color=regular"							
+				});
+			
+			});
+		</script>
+	
+	</head>
+	<body>
+		<div class="col col1">
+			<span class="overlay">Touch to select</span>
+		</div>
+		<div class="col col2">
+			<span class="overlay">Touch to select</span>
+		</div>
+		<div class="col col3">
+			<span class="overlay">Touch to select</span>
+		</div>
+
+	</body>
+
+</html>
