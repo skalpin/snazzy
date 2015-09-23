@@ -32,6 +32,7 @@ from ws4py.server.wsgiutils import WebSocketWSGIApplication
 import assemble
 import util
 import printer
+import flash
 
 ###########################################
 # CONFIGURATION
@@ -101,6 +102,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
                 self.server.capturing = True
                 self.server.capture(pic_number)
                 self.server.capturing = False
+                #self.server.flash.blink()
             if pic_number == '3':
                 self.server.assemble()
             content_type = 'text/json; charset=utf-8'
@@ -143,9 +145,10 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 
 
 class StreamingHttpServer(HTTPServer):
-    def __init__(self, camera, output):
+    def __init__(self, camera, output, flash):
         self.camera = camera
         self.output = output
+        self.flash = flash
         self.recording = False
         self.capturing = False
         self.color = ''
@@ -173,7 +176,7 @@ class StreamingHttpServer(HTTPServer):
 
     def assemble(self):
         filename = assemble.assemble(self.session_images)
-        #printer.print_file(filename)
+        printer.print_file(filename)
 
 
 class StreamingWebSocket(WebSocket):
@@ -226,6 +229,9 @@ class BroadcastThread(Thread):
 
 
 def main():
+    led_flash = flash.Flash()
+
+    led_flash.on()
     print('Initializing camera')
     with picamera.PiCamera() as camera:
         camera.resolution = (WIDTH, HEIGHT)
@@ -243,7 +249,7 @@ def main():
         
         output = BroadcastOutput(camera)
 
-        http_server = StreamingHttpServer(camera, output)
+        http_server = StreamingHttpServer(camera, output, led_flash)
         http_thread = Thread(target=http_server.serve_forever)
         print('Initializing broadcast thread')
 
@@ -263,6 +269,9 @@ def main():
         except KeyboardInterrupt:
             pass
         finally:
+            print('Turning off flash')
+            led_flash.off()
+
             print('Stopping recording')
             camera.stop_recording()
             print('Waiting for broadcast thread to finish')
