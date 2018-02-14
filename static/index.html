@@ -3,16 +3,16 @@
 		<style>
 			
 			.btn.overlay {
-				font-size: 50px !important;				
+				font-size: 50px !important;
 				height: 100%;
 				width: 100%;
 			}
 			.overlay span {
 				position: absolute;
-			    bottom: 0;
-			    left: 15;
-			    line-height: 40px;
-			    font-weight: 600;
+				bottom: 0;
+				left: 15;
+				line-height: 40px;
+				font-weight: 600;
 			}
 
 			body {
@@ -27,18 +27,16 @@
 			$(document).ready(function(){
 				var preview_location = '/preview.html';
 				$(".sepia").click(function(){
-					window.location = preview_location + "?color=sepia"				
+					window.location = preview_location + "?color=sepia"
 				});
 				$(".blackwhite").click(function(){
-					window.location = preview_location + "?color=bw"			
+					window.location = preview_location + "?color=bw"
 				});
 				$(".regular").click(function(){
-					window.location = preview_location + "?color=regular"							
+					window.location = preview_location + "?color=regular"
 				});
-			
 			});
 		</script>
-	
 	</head>
 	<body>
 		<div class="row">
@@ -59,5 +57,4 @@
 			</div>
 		</div>
 	</body>
-
 </html>
