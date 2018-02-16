@@ -54,7 +54,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 			tpl = Template(self.server.get_file('static/preview.html'))
 
 			content = tpl.safe_substitute(dict(
-				ADDRESS='%s:%d' % (self.request.getsockname()[0], self.server.port),
+				ADDRESS='%s:%d' % (self.request.getsockname()[0], self.server.ws_port),
 				WIDTH=WIDTH, HEIGHT=HEIGHT, COLOR=COLOR, BGCOLOR=BGCOLOR)).encode('utf-8')
 		elif self.path == '/stop':
 			print('stop recording called')

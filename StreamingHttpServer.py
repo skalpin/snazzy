@@ -5,8 +5,9 @@ import sys
 PY2 = sys.version_info.major == 2
 
 class StreamingHttpServer(HTTPServer):
-	def __init__(self, port, camera, output):
+	def __init__(self, port, ws_port, camera, output):
 		self.port = port
+		self.ws_port = ws_port
 		self.camera = camera
 		self.output = output
 		#self.flash = flash
