@@ -26,4 +26,6 @@ After activating the environment run
 
 ```
 pip install Flask
+pip install ws4py
+pip install picamera
 ```
