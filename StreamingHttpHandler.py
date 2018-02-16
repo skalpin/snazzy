@@ -1,6 +1,14 @@
 from write_info import write_info
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from time import sleep, time
+from urllib.parse import parse_qs
+from string import Template
+
+
+WIDTH = 1280
+HEIGHT = 960
+COLOR = u'#444'
+BGCOLOR = u'#333'
 
 class StreamingHttpHandler(BaseHTTPRequestHandler):
 	def do_HEAD(self):
@@ -16,12 +24,16 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 			write_info(5, "get /static")
 			if self.path.endswith('.js'):
 				content_type = 'application/javascript'
+				content = self.server.get_file(self.path[1:]).encode('utf-8')
 			elif self.path.endswith('.html'):
 				content_type = 'text/html; charset=utf-8'
+				content = self.server.get_file(self.path[1:]).encode('utf-8')
 			elif self.path.endswith('.css'):
 				content_type = 'text/css; charset=utf-8'
-			content = self.server.get_file(self.path[1:])
-
+				content = self.server.get_file(self.path[1:]).encode('utf-8')
+			elif self.path.endswith('.woff2'):
+				content_type = 'font/woff2'
+				content = self.server.get_file_bytes(self.path[1:])
 		elif self.path.startswith('/preview'):
 			params = parse_qs(self.path.split("?")[1])
 			self.server.color = params['color'][0]
@@ -42,8 +54,8 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 			tpl = Template(self.server.get_file('static/preview.html'))
 
 			content = tpl.safe_substitute(dict(
-				ADDRESS='%s:%d' % (self.request.getsockname()[0], WS_PORT),
-				WIDTH=WIDTH, HEIGHT=HEIGHT, COLOR=COLOR, BGCOLOR=BGCOLOR))		   
+				ADDRESS='%s:%d' % (self.request.getsockname()[0], self.server.port),
+				WIDTH=WIDTH, HEIGHT=HEIGHT, COLOR=COLOR, BGCOLOR=BGCOLOR)).encode('utf-8')
 		elif self.path == '/stop':
 			print('stop recording called')
 			if self.server.recording == True:
@@ -91,7 +103,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 		else:
 			self.send_error(404, 'File not found')
 			return
-		content = content.encode('utf-8')
+		#content = content.encode('utf-8')
 		self.send_response(200)
 		self.send_header('Content-Type', content_type)
 		self.send_header('Content-Length', len(content))

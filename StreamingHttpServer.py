@@ -1,25 +1,32 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from StreamingHttpHandler import StreamingHttpHandler
 import io
+import sys
+PY2 = sys.version_info.major == 2
 
 class StreamingHttpServer(HTTPServer):
-	def __init__(self, port):
-		#self.camera = camera
-		#self.output = output
+	def __init__(self, port, camera, output):
+		self.port = port
+		self.camera = camera
+		self.output = output
 		#self.flash = flash
-		#self.recording = False
+		self.recording = True
 		#self.capturing = False
-		#self.color = ''
-		#self.color_effect = (100, 150)
-		#self.session_images = []
+		self.color = ''
+		self.color_effect = (100, 150)
+		self.session_images = []
 		## Eurgh ... old-style classes ...
-		#if PY2:
-			#HTTPServer.__init__(self, ('', HTTP_PORT), StreamingHttpHandler)
-		#else:
-		super(StreamingHttpServer, self).__init__(('', port), StreamingHttpHandler)
+		if PY2:
+			HTTPServer.__init__(self, ('', HTTP_PORT), StreamingHttpHandler)
+		else:
+			super(StreamingHttpServer, self).__init__(('', port), StreamingHttpHandler)
 
 	def get_file(self, filename):
 		with io.open(filename, 'r') as f:
+			return f.read()
+
+	def get_file_bytes(self, filename):
+		with io.open(filename, 'rb') as f:
 			return f.read()
 
 	#def capture(self, image_name):
