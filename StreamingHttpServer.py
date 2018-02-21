@@ -1,8 +1,12 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from StreamingHttpHandler import StreamingHttpHandler
 import io
+import os
 import sys
 PY2 = sys.version_info.major == 2
+import assemble
+import util
+import printer
 
 class StreamingHttpServer(HTTPServer):
 	def __init__(self, port, ws_port, camera, output):
@@ -12,7 +16,7 @@ class StreamingHttpServer(HTTPServer):
 		self.output = output
 		#self.flash = flash
 		self.recording = True
-		#self.capturing = False
+		self.capturing = False
 		self.color = ''
 		self.color_effect = (100, 150)
 		self.session_images = []
@@ -30,15 +34,16 @@ class StreamingHttpServer(HTTPServer):
 		with io.open(filename, 'rb') as f:
 			return f.read()
 
-	#def capture(self, image_name):
-		#currentDir = os.getcwd()
+	def capture(self, image_name):
+		currentDir = os.getcwd()
 
-		#img_path = "%s/%s.jpg" % (currentDir, image_name)
-		#print('image path:' + img_path)
-		#self.camera.capture(img_path, use_video_port=True)
-		#image = util.process(img_path, assemble.get_height_each())
-		#self.session_images.append(image)
+		img_path = "%s/%s.jpg" % (currentDir, image_name)
+		print('image path:' + img_path)
+		self.camera.capture(img_path, use_video_port=True)
+		image = util.process(img_path, assemble.get_height_each())
+		self.session_images.append(image)
 
-	#def assemble(self):
-		#filename = assemble.assemble(self.session_images)
-		#printer.print_file(filename)
+	def assemble(self):
+		filename = assemble.assemble(self.session_images)
+		print('saved file ', filename)
+		printer.print_file(filename)

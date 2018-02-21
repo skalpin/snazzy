@@ -7,7 +7,7 @@
 	<title>jsmpeg streaming</title>
 	<style type="text/css">
 		body {
-			background: ${BGCOLOR};
+			background-color: ${BGCOLOR} !important;
 			text-align: center;
 			margin-top: 30px;
 			font-family: sans;
@@ -45,7 +45,6 @@
 	<link href="static/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
 	<script type="text/javascript" src="static/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-    
 
 	<script>
 		$(document).ready(function(){
@@ -76,7 +75,7 @@
 					console.log('got picture response');
 					var resp_json = JSON.parse(data.responseText);
 					$("#picture_container").attr("src", resp_json.src);
-				});			
+				});
 			});
 			$("#u_up").click(function(){
 				u += 1;
@@ -156,9 +155,9 @@
 						
 						showLookUp();
 						setTimeout(function(){
-							take_picture();					
+							take_picture();
 						}, 1000);
-					}	
+					}
 				}, 1000);
 			}
 			
@@ -174,7 +173,7 @@
 
 
 			goButton.click(function(){
-				startCountdown(5);			
+				startCountdown(5);
 			});
 		
 

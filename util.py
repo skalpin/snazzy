@@ -5,8 +5,8 @@ from wand.drawing import Drawing
 def crop_square_center(image):
 	width = image.width
 	height = image.height
-
-	image.crop(width=height, height=height, left=(width - height)/2, top=0)
+	print((width - height) / 2)
+	image.crop(width=height, height=height, left=int((width - height)/2), top=0)
 
 def crop_center(image, width, height):
 	image_width = image.width

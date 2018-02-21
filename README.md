@@ -22,10 +22,17 @@ When you are done with your work, deactiavte the environment with
 
 ## Install Dependencies
 
+```
+sudo apt-get install cups
+sudo apt-get install libcups2-dev
+```
+
 After activating the environment run
 
 ```
 pip install Flask
 pip install ws4py
 pip install picamera
+pip install wand
+pip install pycups
 ```

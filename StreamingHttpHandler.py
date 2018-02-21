@@ -4,7 +4,6 @@ from time import sleep, time
 from urllib.parse import parse_qs
 from string import Template
 
-
 WIDTH = 1280
 HEIGHT = 960
 COLOR = u'#444'
@@ -63,7 +62,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 				self.server.recording = False
 
 			content_type = 'text/json; charset=utf-8'
-			content = "{success: true}"
+			content = "{success: true}".encode('utf-8')
 		elif self.path.startswith('/picture'):
 			pic_number = self.path.split("/")[-1]
 			if self.server.capturing == False:
@@ -75,7 +74,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 			if pic_number == '3':
 				self.server.assemble()
 			content_type = 'text/json; charset=utf-8'
-			content = "{src : 'from_server.jpg'}"
+			content = "{src : 'from_server.jpg'}".encode('utf-8')
 		elif self.path.startswith('/settings'):
 			params = parse_qs(self.path.split("?")[1])
 			color_effect_params = params['color_effect']
@@ -100,6 +99,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
 			#print(str(self.server.camera.color_effects))
 			content_type = 'text/json; charset=utf-8'
 			content = "{'success' : true, 'color_effect' : %d, %d}" % (u,v)
+			content.encode('utf-8')
 		else:
 			self.send_error(404, 'File not found')
 			return
