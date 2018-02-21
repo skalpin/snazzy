@@ -6,5 +6,5 @@ def print_file(filename):
 	for printer in printers:
 		print(printer, printers[printer]["device-uri"])
 
-	piMate = printers.keys()[0]
+	piMate = list(printers.keys())[0]
 	conn.printFile(piMate, filename, "BoothPrint", {})
