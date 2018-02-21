@@ -2,41 +2,30 @@ from ws4py.websocket import WebSocket
 from ws4py.server.wsgirefserver import WSGIServer, WebSocketWSGIRequestHandler
 from ws4py.server.wsgiutils import WebSocketWSGIApplication
 from wsgiref.simple_server import make_server
-from struct import Struct
 from threading import Thread
-native_str = str
-str = type('')
-
-WIDTH = 1280
-HEIGHT = 960
-WS_PORT = 8084
-JSMPEG_MAGIC = b'jsmp'
-JSMPEG_HEADER = Struct(native_str('>4sHH'))
+import socket
+import Factory
 
 class StreamingWebSocket(WebSocket):
-	def opened(self):
-		self.send(JSMPEG_HEADER.pack(JSMPEG_MAGIC, WIDTH, HEIGHT), binary=True)
+    def opened(self):
+        self.send(Factory.Config.JSMPEG_HEADER.pack(Factory.Config.JSMPEG_MAGIC, Factory.Config.WIDTH, Factory.Config.HEIGHT), binary=True)
 
-class WebSocketInterface():
-	def init_webSocket(self):
-		raise NotImplementedError
-	def release_webSocket(self):
-		raise NotImplementedError
-
-class WebSocketHandler(WebSocketInterface):
-	def init_webSocket(self):
-		websocket_server = make_server(
-			'', WS_PORT,
-			server_class=WSGIServer,
-			handler_class=WebSocketWSGIRequestHandler,
-			app=WebSocketWSGIApplication(handler_cls=StreamingWebSocket))
-		websocket_server.initialize_websockets_manager()
-		self._websocket_thread = Thread(target=websocket_server.serve_forever)
-		self._websocket_server = websocket_server
-		self._websocket_thread.start()
-	def release_webSocket(self):
-		self._websocket_server.shutdown()
-		self._websocket_thread.join()
-
-class WebSocket(WebSocketHandler):
-	pass
+class WebSocket():
+    def __init__(self,config):
+        self._config = config
+    def start(self):
+        websocket_server = make_server(
+                '', self._config.WS_PORT,
+                server_class=WSGIServer,
+                handler_class=WebSocketWSGIRequestHandler,
+                app=WebSocketWSGIApplication(handler_cls=StreamingWebSocket))
+        websocket_server.initialize_websockets_manager()
+        self._websocket_thread = Thread(target=websocket_server.serve_forever)
+        self._websocket_server = websocket_server
+        self._websocket_thread.start()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('localhost', 0))
+        return '%s:%d' % (sock.getsockname()[0], self._config.WS_PORT) 
+    def stop(self):
+        self._websocket_server.shutdown()
+        self._websocket_thread.join()
