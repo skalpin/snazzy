@@ -36,3 +36,7 @@ pip install picamera
 pip install wand
 pip install pycups
 ```
+
+## Run with Flask
+
+In bash set your environment variable with `export FLASK_APP=FlaskServer.py`. Then start the server with `flask run`
