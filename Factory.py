@@ -10,8 +10,13 @@ class FactoryType(type):
     @property
     def WebSocketServer(cls):
         if getattr(cls, '_websocketserver', None) is None:
-            cls._websocketserver = WebSocket(Config)
+            cls._websocketserver = WebSocket(Config, Camera)
         return cls._websocketserver
+    @property
+    def Camera(cls):
+        if getattr(cls, '_camera', None) is None:
+            cls._camera = Camera(Config)
+        return cls._camera
 
 class Factory(metaclass=FactoryType):
     pass
