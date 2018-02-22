@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jsmpeg streaming</title>
+    <style type="text/css">
+        body {
+            background-color: {{Config.BGCOLOR}} !important;
+            text-align: center;
+            margin-top: 30px;
+            font-family: sans;
+        }
+        #countDownText {
+            color: white;
+            font-family: sans;
+            font-size: 80px;
+            font-weight: bold;
+        }
+        #lookUp {
+            color: white;
+            font-family: sans;
+            font-size: 80px;
+            font-weight: bold;
+        }
+        #go {
+            width: 100%;
+            /*height: 120px;*/
+            font-size: 100px;
+            padding: 20px;
+        }
+        #videoCanvas {
+            /* Always stretch the canvas to 640x480, regardless of its
+               internal size. */
+            width: 640px;
+            height: 480px;
+        }
+    </style>
+    <link href="static/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="static/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var u = 100;
+            var v = 150;
+            var contrast = 0;
+            var brightness = 50;
+            var contrast_delta = 5;
+            var brightness_delta = 5;
+
+            var goButton = $("#go");
+            var countDown = $("#countDown");
+            var countDownText = $("#countDownText");
+            var lookUp = $('#lookUp');
+            var videoCanvas = $('#videoCanvas');
+            var takeNumber = 1;
+
+            $("#start").click(function(){
+                window.location = "/preview.html?color=sepia";
+            });
+            $("#stop").click(function(){
+                $.get("/stop", function(data){
+                    console.log('Stop response:', data.responseText);
+                })
+            });
+            $("#picture").click(function() {
+                $.get("/picture/"+takeNumber , {}, function(data) {
+                    console.log('got picture response');
+                    var resp_json = JSON.parse(data.responseText);
+                    $("#picture_container").attr("src", resp_json.src);
+                });
+            });
+            $("#u_up").click(function(){
+                u += 1;
+                send_effect(u,v, brightness, contrast)
+            });
+            $("#u_down").click(function(){
+                u -= 1;
+                send_effect(u,v, brightness, contrast)
+            });
+            $("#v_up").click(function(){
+                v += 1;
+                send_effect(u,v, brightness, contrast)
+            });
+            $("#v_down").click(function(){
+                v -= 1;
+                send_effect(u,v, brightness, contrast)
+            });
+
+            $("#contrast_up").click(function(){
+                contrast += contrast_delta;
+                send_effect(u,v, brightness, contrast)
+            });
+            $("#contrast_down").click(function(){
+                contrast -= contrast_delta;
+                send_effect(u,v, brightness, contrast)
+            });
+
+            $("#brightness_up").click(function(){
+                brightness += brightness_delta;
+                send_effect(u,v, brightness, contrast)
+            });
+            $("#brightness_down").click(function(){
+                brightness -= brightness_delta;
+                send_effect(u,v, brightness, contrast)
+            });
+
+            function send_effect(u, v, brightness, contrast) {
+                $.get("/settings", {'color_effect': u+','+v, 'brightness' : brightness, 'contrast': contrast}, function(data){
+                    console.log(data.responseText);
+                })
+            }
+            function take_picture(){
+                $.get("/picture/"+takeNumber, {}, function(data){
+                    console.log(data.responseText);
+                });
+                setTimeout(function(){
+                    if(takeNumber < 3) {
+                        takeNumber += 1;
+                        console.log('continuing');
+                        startCountdown(5);
+                    } else {
+                        /*
+                                countDown.hide();
+                                lookUp.hide();
+                                videoCanvas.show();
+                                goButton.show();
+                                takeNumber = 1;
+                         */
+                        window.location = "/preview/stop";
+                    }
+                }, 1000)
+            }
+
+            function startCountdown(start_value) {
+                goButton.hide();
+                lookUp.hide();
+                videoCanvas.show();
+                countDown.show();
+                countDownText.html(start_value);
+
+                var timer = setInterval(function(){
+                    start_value -= 1;
+                    if(start_value >= 1) {
+                        countDownText.html(start_value);
+                    } else {
+                        clearInterval(timer);
+
+                        showLookUp();
+                        setTimeout(function(){
+                            take_picture();
+                        }, 1000);
+                    }
+                }, 1000);
+            }
+
+            function showLookUp(){
+                countDown.hide();
+                videoCanvas.hide();
+                lookUp.show();
+            }
+
+            function showFinish() {
+            }
+
+
+            goButton.click(function(){
+                startCountdown(5);
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- The Canvas size specified here is the "initial" internal resolution. jsmpeg will
+        change this internal resolution to whatever the source provides. The size the
+        canvas is displayed on the website is dictated by the CSS style.
+    -->
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <canvas id="videoCanvas" width="640" height="480">
+                <p>
+                Please use a browser that supports the Canvas Element, like
+                <a href="http://www.google.com/chrome">Chrome</a>,
+                <a href="http://www.mozilla.com/firefox/">Firefox</a>,
+                <a href="http://www.apple.com/safari/">Safari</a> or Internet Explorer 10
+                </p>
+            </canvas>
+        </div>
+    </div>
+    <div class="row" id="lookUp" style="display:none">
+        <div class="col-md-10 col-md-offset-1">
+            <!--<img src="static/look_up.png"/>-->
+            ^<br/>
+            |<br/>
+            Look Up!<br/>
+            Smile!!<br/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <button type="button" class="btn btn-success btn-lg" id="go">
+                <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                <span>GO!</span>
+            </button>
+        </div>
+    </div>
+    <div id="countDown"><span id="countDownText"></span></div>
+    <div style="display:none">
+        <div id="settings" style="display:none">
+            <button id="start" type="button">Start</button>
+            <button id="stop" type="button">Stop</button>
+            <button id="picture" type="button">Picture</button>
+            <button id="u_up" type="button">U up</button>
+            <button id="u_down" type="button">U down</button>
+            <button id="v_up" type="button">V up</button>
+            <button id="v_down" type="button">U down</button>
+        </div>
+        <div>
+            <button id="brightness_up" type="button">Brightness ^</button>
+            <button id="brightness_down" type="button">Brightness v</button>
+        </div>
+        <div>
+            <button id="contrast_up" type="button">Contrast ^</button>
+            <button id="contrast_down" type="button">Contrast v</button>
+        </div>
+    </div>
+    <script type="text/javascript" src="static/jsmpg.js"></script>
+    <script type="text/javascript">
+        // Show loading notice
+        var canvas = document.getElementById('videoCanvas');
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '{{Config.COLOR}}';
+        ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
+
+        // Setup the WebSocket connection and start the player
+var client = new WebSocket('ws://{{ADDRESS}}/');
+        var player = new jsmpeg(client, {canvas:canvas});
+    </script>
+</body>
+</html>
