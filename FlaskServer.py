@@ -6,7 +6,6 @@ import Config
 
 app = Flask(__name__, static_url_path='/static')
 session_images = []
-factory = Factory()
 
 @app.route("/")
 def root():
@@ -15,17 +14,17 @@ def root():
 @app.route("/preview")
 def preview():
 	session_images = []
-	return render_template('preview2.html', Config=Config)
+	return render_template('preview.html', Config=Config)
 
 @app.route("/picture/<pic_number>")
 def picture(pic_number):
 	if self.server.capturing == False:
 		print('took picture')
-		image = factory.Camera().capture(pic_number)
+		image = Factory.Camera().capture(pic_number)
 		session_images.append(image)
 		#self.server.flash.blink()
 	if pic_number == '3':
-		factory.Camera().assemble(session_images)
+		Factory.Camera().assemble(session_images)
 		session_images = []
 
 def gen(camera):
@@ -36,11 +35,11 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
-	return Response(gen(factory.Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+	return Response(gen(Factory.Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/preview/stop")
 def preview_stop():
-	factory.WebSocket().stop()
+	Factory.WebSocket().stop()
 	return redirect('/')
 
 @app.route("/<path:path>")

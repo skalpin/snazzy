@@ -2,26 +2,25 @@ from WebSocket import WebSocket
 import Config
 from camera_pi import Camera
 from BroadcastOutput import BroadcastOutput
+import picamera
 
 class Factory():
-	def __init__(self):
-		self._config = None
-		self._wss = None
-		self._camera = None
-		self._broadcast_output = None
-	def Config(self):
-		if self._config == None:
-			self._config = Config
-		return self._config
-	def WebSocket(self):
-		if self._wss == None:
-			self._wss = WebSocket(self.Config(), self.Camera())
-		return self._wss
-	def BroadcastOutput(self):
-		if self._broadcast_output == None:
-			self._broadcast_output = BroadcastOutput(self.Config())
-		return self._broadcast_output
-	def Camera(self):
-		if self._camera == None:
-			self._camera = Camera()
-		return self._camera
+	@classmethod
+	def Config(cls):
+		return Config
+	@classmethod
+	def WebSocket(cls):
+		return cls.singleton('_websocket', lambda:WebSocket(cls.Config(), cls.Camera()))
+	@classmethod
+	def BroadcastOutput(cls):
+		return cls.singleton('_broadcastoutput', lambda:BroadcastOutput(cls.Config()))
+	@classmethod
+	def Camera(cls):
+		return Camera()
+		#return cls.singleton('_camera', Camera)
+
+	@classmethod
+	def singleton(cls, name, d):
+		if not hasattr(cls, name):
+			setattr(cls, name, d())
+		return cls.__dict__[name]

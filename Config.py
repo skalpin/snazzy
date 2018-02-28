@@ -2,9 +2,9 @@ from struct import Struct
 native_str = str
 str = type('')
 
-WIDTH = 320
-HEIGHT = 240
-FRAMERATE = 24
+WIDTH = 640
+HEIGHT = 480
+FRAMERATE = 30
 HTTP_PORT = 8082
 WS_PORT = 8084
 COLOR = u'#444'
