@@ -13,16 +13,16 @@ def root():
 
 @app.route("/preview")
 def preview():
+	color = request.args.get('color')
 	session_images = []
 	return render_template('preview.html', Config=Config)
 
 @app.route("/picture/<pic_number>")
 def picture(pic_number):
-	if self.server.capturing == False:
-		print('took picture')
-		image = Factory.Camera().capture(pic_number)
-		session_images.append(image)
-		#self.server.flash.blink()
+	print('taking picture')
+	image = Factory.Camera().capture(pic_number)
+	#session_images.append(image)
+	#self.server.flash.blink()
 	if pic_number == '3':
 		Factory.Camera().assemble(session_images)
 		session_images = []
@@ -35,11 +35,12 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
-	return Response(gen(Factory.Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+	cam = Factory.Camera()
+	cam.start_camera_thread()
+	return Response(gen(cam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/preview/stop")
 def preview_stop():
-	Factory.WebSocket().stop()
 	return redirect('/')
 
 @app.route("/<path:path>")
