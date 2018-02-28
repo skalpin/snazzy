@@ -16,7 +16,7 @@ class Factory():
 		return cls.singleton('_broadcastoutput', lambda:BroadcastOutput(cls.Config()))
 	@classmethod
 	def Camera(cls):
-		return cls.singleton('_camera', Camera)
+		return cls.singleton('_camera', lambda:Camera(cls.Config()))
 
 	@classmethod
 	def singleton(cls, name, d):

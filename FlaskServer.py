@@ -5,7 +5,6 @@ from Factory import Factory
 import Config
 
 app = Flask(__name__, static_url_path='/static')
-session_images = []
 
 @app.route("/")
 def root():
@@ -14,18 +13,17 @@ def root():
 @app.route("/preview")
 def preview():
 	color = request.args.get('color')
-	session_images = []
+	Factory.Camera().new_session(color)
 	return render_template('preview.html', Config=Config)
 
 @app.route("/picture/<pic_number>")
 def picture(pic_number):
 	print('taking picture')
-	image = Factory.Camera().capture(pic_number)
-	#session_images.append(image)
+	Factory.Camera().capture(pic_number)
 	#self.server.flash.blink()
 	if pic_number == '3':
-		Factory.Camera().assemble(session_images)
-		session_images = []
+		Factory.Camera().assemble()
+	return ''
 
 def gen(camera):
 	while True:
