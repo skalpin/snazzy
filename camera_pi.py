@@ -6,6 +6,7 @@ from base_camera import BaseCamera
 from Session import Session
 import util
 import assemble
+import printer
 
 class Camera(BaseCamera):
 	def __init__(self, config):
@@ -29,7 +30,7 @@ class Camera(BaseCamera):
 	def frames(self):
 		self.get_camera()
 		stream = io.BytesIO()
-		for _ in self._camera.capture_continuous(stream, 'jpeg', use_video_port=True):
+		for _ in self._camera.capture_continuous(stream, 'jpeg', use_video_port=True, resize=(640, 480)):
 			# return current frame
 			stream.seek(0)
 			yield stream.read()
@@ -63,5 +64,7 @@ class Camera(BaseCamera):
 
 	def assemble(self):
 		print('assembling images')
+		filename = assemble.assemble(self._session.session_images)
+		printer.print_file(filename)
 		#clear out the session images
 		self._session = None
