@@ -40,7 +40,8 @@ def assemble(images):
 	with Image(width=width_px, height=height_px, background=Color('white')) as underlay:
 		underlay.composite_channel('default_channels', background, 'over', int(width_px * 0.025), int(height_px * 0.025))
 	
-		filename = 'out' + str(datetime.datetime.now()) + '.jpg'
+		filename = '/media/pi/PICSTORE/BoothPhotos/' + str(datetime.datetime.now()).replace(":","") + '.jpg'
+		print(filename)
 		underlay.save(filename=filename)
 		return filename
 

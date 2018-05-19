@@ -7,6 +7,8 @@ from Session import Session
 import util
 import assemble
 import printer
+import datetime
+import shutil
 
 class Camera(BaseCamera):
 	def __init__(self, config):
@@ -57,8 +59,11 @@ class Camera(BaseCamera):
 	def capture(self, picnum):
 		currentDir = os.getcwd()
 		img_path = "%s/%s.jpg" % (currentDir, picnum)
+		#img_path = currentDir + str(datetime.datetime.now()).replace(":","") +  str(picnum) + '.jpg'
 		print('image path:' + img_path)
 		self._camera.capture(img_path, use_video_port=False)
+		shutil.copy2(img_path, self._config.WEDDING_PHOTO_PATH + str(datetime.datetime.now()).replace(":","") + '.jpg')
+
 		image = util.process(img_path, assemble.get_height_each())
 		self._session.session_images.append(image)
 
@@ -67,4 +72,5 @@ class Camera(BaseCamera):
 		filename = assemble.assemble(self._session.session_images)
 		#clear out the session images
 		self._session = None
-		printer.print_file(filename)
+		if self._config.PRINT_ATT:
+			printer.print_file(filename)

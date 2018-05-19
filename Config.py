@@ -23,3 +23,10 @@ HFLIP = True
 VFLIP = False
 JSMPEG_MAGIC = b'jsmp'
 JSMPEG_HEADER = Struct(native_str('>4sHH'))
+
+#Feature Flags
+
+PRINT_ATT = False
+CAMERA_ATT = True
+USB_ATT = True
+WEDDING_PHOTO_PATH = '/media/pi/PICSTORE/WeddingPhotos/'
