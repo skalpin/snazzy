@@ -3,6 +3,7 @@ import Config
 from camera_pi import Camera
 from BroadcastOutput import BroadcastOutput
 import picamera
+from flash import Flash
 
 class Factory():
 	@classmethod
@@ -17,6 +18,9 @@ class Factory():
 	@classmethod
 	def Camera(cls):
 		return cls.singleton('_camera', lambda:Camera(cls.Config()))
+	@classmethod
+	def Flash(cls):
+		return cls.singleton('_flash', lambda:Flash())
 
 	@classmethod
 	def singleton(cls, name, d):

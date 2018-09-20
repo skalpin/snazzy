@@ -6,6 +6,8 @@ import Config
 
 app = Flask(__name__, static_url_path='/static')
 
+Factory.Flash().on();
+
 @app.route("/")
 def root():
 	return app.send_static_file('index.html')

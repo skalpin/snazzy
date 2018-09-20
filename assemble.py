@@ -34,14 +34,17 @@ def get_height_each():
 	return height_each
 
 def assemble(images):
+	print('in assemble')
+	print('background')
 	background = Image(width=width_px, height=height_px, background=Color('white'))
+	print('util composite_all')
 	util.composite_all(background, images, padding, height_each, width_each)
+	print('background again')
 	background.transform(str(width_px)+'x'+str(height_px), '95%')
 	with Image(width=width_px, height=height_px, background=Color('white')) as underlay:
 		underlay.composite_channel('default_channels', background, 'over', int(width_px * 0.025), int(height_px * 0.025))
-	
-		filename = '/media/pi/PICSTORE/BoothPhotos/' + str(datetime.datetime.now()).replace(":","") + '.jpg'
-		print(filename)
+		#filename = '/media/pi/PICSTORE/BoothPhotos/' + str(datetime.datetime.now()).replace(":","") + '.jpg'
+		filename = 'out' + str(datetime.datetime.now()) + '.jpg'
 		underlay.save(filename=filename)
 		return filename
 

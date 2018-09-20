@@ -1,6 +1,7 @@
 import cups
 
 def print_file(filename):
+	print(filename)
 	conn = cups.Connection()
 	printers = conn.getPrinters()
 	for printer in printers:
