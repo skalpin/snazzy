@@ -22,8 +22,8 @@ def picture(pic_number):
 	Factory.Camera().capture(pic_number)
 	#self.server.flash.blink()
 	if pic_number == '3':
-		Factory.Camera().assemble()
-	return ''
+		#Factory.Camera().assemble()
+		return redirect('/')
 
 def gen(camera):
 	while True:
@@ -46,4 +46,4 @@ def get(path):
 	return app.send_static_file(path)
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', threaded=True)
+	app.run(host='0.0.0.0', port=80, threaded=True)

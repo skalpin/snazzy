@@ -7,6 +7,7 @@ from Session import Session
 import util
 import assemble
 import printer
+from subprocess import call
 
 class Camera(BaseCamera):
 	def __init__(self, config):
@@ -64,7 +65,9 @@ class Camera(BaseCamera):
 
 	def assemble(self):
 		print('assembling images')
-		filename = assemble.assemble(self._session.session_images)
-		#clear out the session images
+		call(['python', 'assemble.py'])
+		#filename = assemble.assemble(self._session.session_images)
+		#printer.print_file(filename)
+		#print(filename)
+		print('clearing out session images')
 		self._session = None
-		printer.print_file(filename)

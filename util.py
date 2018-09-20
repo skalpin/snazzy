@@ -45,19 +45,30 @@ def process(path, height_each):
 	return image
 
 def composite_all(background, images, padding, width_each, height_each):
+	print('first column')
 	#First column
+	print('first column image 1')
 	background.composite(images[0], padding, padding)
+	print('first column image 2')
 	background.composite(images[1], padding, int(height_each + padding * 2))
+	print('first column image 3')
 	background.composite(images[2], padding, int(height_each * 2 + padding * 3))
 
+	print('second column')
 	#Second column
 	col2_padding = int(padding * 3 + width_each)
 
+	print('second column image 1')
 	background.composite(images[0], col2_padding, padding)
+	print('second column image 2')
 	background.composite(images[1], col2_padding, int(height_each + padding * 2))
+	print('second column image 3')
 	background.composite(images[2], col2_padding, int(height_each * 2 + padding * 3))
 
+	print('with image background as overlay')
 	with Image(filename="booth_background.png") as overlay:
+		print('overlay.resize')
 		overlay.resize(width=overlay.width*2, height=overlay.height*2)
+		print('composite all background.composite_channel')
 		background.composite_channel('default_channels', overlay, 'over', 0, 0)
 
